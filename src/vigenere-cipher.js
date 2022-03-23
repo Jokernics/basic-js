@@ -20,13 +20,57 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(type = true) {
+    this.type = type
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  
+  encrypt(message, key) {
+    if (arguments.length != 2 || message === undefined || key === undefined) throw Error('Incorrect arguments!')
+    let result = []
+    let pos = 0
+    message = message.toLowerCase()
+    key = key.toLowerCase()
+
+    for (let i = 0; i < message.length; i++) {
+      let char = message[i].charCodeAt() - 97
+      if (char < 0 || char > 26) {
+        result.push(message[i])
+        continue
+      }
+      let keyChar = key[pos % key.length].charCodeAt() - 97
+      pos++
+      let sumOfStr = String.fromCharCode((char + keyChar) % 26 + 97)
+      result.push(
+        sumOfStr
+      )
+    }
+    
+    return this.type ? result.join('').toUpperCase() : result.reverse().join('').toUpperCase()
+  }
+  
+  decrypt(message, key) {
+    if (arguments.length != 2 || message === undefined || key === undefined) throw Error('Incorrect arguments!')
+    
+    let result = []
+    let pos = 0
+    message = message.toLowerCase()
+    key = key.toLowerCase()
+
+    for (let i = 0; i < message.length; i++) {
+      let char = message[i].charCodeAt() - 97
+      if (char < 0 || char > 26) {
+        result.push(message[i])
+        continue
+      }
+      let keyChar = key[pos % key.length].charCodeAt() - 97
+      pos++
+      let sumOfStr = String.fromCharCode((char - keyChar > 26 ? char - keyChar : char - keyChar + 26) % 26 + 97)
+      result.push(
+        sumOfStr
+      )
+    }
+    
+    return this.type ? result.join('').toUpperCase() : result.reverse().join('').toUpperCase()
   }
 }
 
